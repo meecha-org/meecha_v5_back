@@ -1,0 +1,6 @@
+[submodule "meecha_v5_web"]
+	path = meecha_v5_web
+	url = https://github.com/meecha-org/meecha_v5_web
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/meecha-org/meecha_v5_web
