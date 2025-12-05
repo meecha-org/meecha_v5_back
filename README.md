@@ -6,6 +6,12 @@ meecha の バージョン5のリポジトリ
 git clone https://github.com/meecha-org/meecha_v5_back --depth 1
 ```
 
+## 仕様技術
+- タスク自動化: Taskfile
+- コンテナ化: Docker
+- 言語: Go
+
+
 ## 環境構築
 - 環境の構築
 ```
@@ -27,3 +33,10 @@ docker compose down
 ```
 docker compose logs -f app
 ```
+
+## アクセスする方法
+- フロントエンド
+https://localhost:8633/ui/
+
+- バックエンド
+https://localhost:8633/app/
