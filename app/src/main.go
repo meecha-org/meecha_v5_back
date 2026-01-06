@@ -1,32 +1,27 @@
 package main
 
 import (
-	"errors"
-	"log/slog"
-	"net/http"
+	"app/infrastructure/config"
+	"app/route"
 
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	// Echo instance
-	router := echo.New()
 
-	// Middleware
-	router.Use(middleware.Logger())
-	router.Use(middleware.Recover())
+	//db接続、マイグレーション
+	db := config.Init()
 
-	// Routes
-	router.GET("/", hello)
+	//依存性解決とハンドラ取得
+	friendHandler := route.SetupDependencies(db)
 
-	// Start server
-	if err := router.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		slog.Error("failed to start server", "error", err)
-	}
-}
+	// ルーティング設定
+	server := route.InitServer(friendHandler)
 
-// Handler
-func hello(ctx echo.Context) error {
-	return ctx.String(http.StatusOK, "Hello, World!")
+	// ミドルウェア設定
+	server.Use(middleware.Logger())
+	server.Use(middleware.Recover())
+
+	// サーバー起動 (EchoのListen)
+	server.Logger.Fatal(server.Start(":8080")) // 💡 Echoの起動メソッドを使用
 }
