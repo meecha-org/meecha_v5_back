@@ -3,6 +3,7 @@ package config
 import (
 	"app/domain"
 	"log"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,15 +11,12 @@ import (
 var (
 	db *gorm.DB = nil
 )
+
 func Init() *gorm.DB {
-
-	//※コンテナ確率次第直します
-	dsn := "host=localhost user=meecha password=meecha_pass name=meecha port=5432 sslmode=disable TimeZone=Asia/Tokyo"
-
 	// PostgreSQL接続
-	dbconn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dbconn, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
 	if err != nil {
-		log.Fatal("failed to connect database")
+		log.Fatal("failed to connect database", err)
 	}
 
 	// グローバル変数に格納
