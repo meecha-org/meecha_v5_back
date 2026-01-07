@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	// .env読み込み
+	Init()
 
 	//db接続、マイグレーション
 	db := config.Init()
