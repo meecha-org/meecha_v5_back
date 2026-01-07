@@ -13,5 +13,8 @@ openssl/jwtKeys/*
 # 自動ビルドフォルダ除外
 app/src/tmp/
 
+# databaseの設定ファイルを除外
+database/db-data/*
+
 # その他
 .DS_Store
