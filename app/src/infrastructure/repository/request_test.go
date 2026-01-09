@@ -2,36 +2,16 @@ package repository_test
 
 import (
 	"app/domain"
+	"app/infrastructure/config"
 	"app/infrastructure/repository"
-	"log"
-	"os"
 	"testing"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+
 )
-
-
-func setupTestDB(t *testing.T) *gorm.DB {
-	log.Print(os.Getenv("DATABASE_URL"))
-	// 1. インメモリSQLiteでテスト用DB接続を開く
-	db, err := gorm.Open(mysql.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("failed to connect to test database: %v", err)
-	}
-
-	// 2. テーブルをマイグレーション
-	if err := db.AutoMigrate(&domain.FriendRequest{}); err != nil {
-		t.Fatalf("failed to migrate schema: %v", err)
-	}
-
-	db.Migrator().DropTable(&domain.FriendRequest{})
-	db.AutoMigrate(&domain.FriendRequest{})
-	return db
-}
 
 // TestCreateAndExists テスト: Createが成功し、その後にExistsがTrueを返すか
 func TestCreateAndExists(t *testing.T) {
-	db := setupTestDB(t)
+
+	db := config.SetupTestDB(t)
 	repo := repository.FriendRequestRepositoryImpl{DB: db}
 
 	senderID := "userA"

@@ -68,6 +68,7 @@ services:
     restart: always
 
   mysql-db:
+    hostname: mysql-db
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -79,6 +80,7 @@ services:
       - ./database/db-data:/var/lib/mysql
 
   mysql-test:
+    hostname: mysql-db-test
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root

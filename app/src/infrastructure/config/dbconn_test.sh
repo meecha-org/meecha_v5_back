@@ -1,4 +1,3 @@
-export DB_HOST=mysql-db
 export DB_TEST_HOST=mysql-test
 export DB_PORT=3306
 export DB_USER=meecha
