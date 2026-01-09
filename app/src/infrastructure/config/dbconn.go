@@ -4,8 +4,7 @@ import (
 	"app/domain"
 	"log"
 	"os"
-
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 var (
@@ -13,8 +12,8 @@ var (
 )
 
 func Init() *gorm.DB {
-	// PostgreSQL接続
-	dbconn, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
+	// MySQL接続
+	dbconn, err := gorm.Open(mysql.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database", err)
 	}

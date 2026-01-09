@@ -66,21 +66,23 @@ services:
 
     # 自動起動を有効化
     restart: always
- 
-  postgres-db:
-    image: postgres:latest
+
+  mysql-db:
+    image: mysql:latest
     environment:
-      POSTGRES_USER: meecha
-      POSTGRES_PASSWORD: meecha_pass
-      POSTGRES_DB: meecha
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: meecha
+      MYSQL_PASSWORD: meecha_pass
+      MYSQL_DATABASE: meecha
       TZ: Asia/Tokyo
     volumes:
-      - ./database/db-data:/var/lib/postgresql
-      
-  postgres-test:
-    image: postgres:latest
+      - ./database/db-data:/var/lib/mysql
+
+  mysql-test:
+    image: mysql:latest
     environment:
-      POSTGRES_USER: meecha
-      POSTGRES_PASSWORD: meecha_pass
-      POSTGRES_DB: meecha
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: meecha
+      MYSQL_PASSWORD: meecha_pass
+      MYSQL_DATABASE: meecha
       TZ: Asia/Tokyo
