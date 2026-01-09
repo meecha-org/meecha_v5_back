@@ -13,6 +13,9 @@ openssl/jwtKeys/*
 # 自動ビルドフォルダ除外
 app/src/tmp/
 
+# .envファイルを除外
+.env
+
 # databaseの設定ファイルを除外
 database/db-data/*
 
