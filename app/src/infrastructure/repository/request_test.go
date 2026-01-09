@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"testing"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +14,7 @@ import (
 func setupTestDB(t *testing.T) *gorm.DB {
 	log.Print(os.Getenv("DATABASE_URL"))
 	// 1. インメモリSQLiteでテスト用DB接続を開く
-	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("failed to connect to test database: %v", err)
 	}
