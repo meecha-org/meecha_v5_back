@@ -28,3 +28,4 @@ func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, e
 	}
 	return count > 0, nil
 }
+
