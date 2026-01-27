@@ -65,6 +65,7 @@ func TestExecute_AlreadySent(t *testing.T) {
 		t.Errorf("Expected ErrAlreadySent, got %v", err)
 	}
 }
+
 // TestExecute_SelfRequest テスト: 自分自身へのリクエストを拒否するか
 func TestExecute_SelfRequest(t *testing.T) {
 	// 依存のモック設定
@@ -74,38 +75,21 @@ func TestExecute_SelfRequest(t *testing.T) {
 
 	err := interactor.Execute(input)
 
-	if err == nil || err.Error() != "cannot send friend request to oneself" {
+	if err == nil || !errors.Is(err, usecase.ErrSelfRequest) {
 		t.Errorf("Expected 'cannot send...' error, got %v", err)
 	}
 }
+
 // TestExecute_NonExistentUser テスト: 送信者またはターゲットが存在しない場合にエラーを返すか
 func TestExecute_NonExistentUser(t *testing.T) {
-	// 依存のモック設定
-	mockRepo := &MockFriendRequestPort{
-		ExistsResult: false, // 存在しない
-	}
-	mockGenid := &MockUUIDGeneratorPort{
-		GeneratedID: "test-uuid-001",
-	}
+	interactor := createTestInteractor(false, false, true)
 
-	mockUserRepo := &MockUserPort{
-		ExistsByIDResults: map[string]bool{
-			"A": false, // 送信者が存在しない
-			"B": true,
-		},
-	}
-
-	interactor := usecase.SendFriendRequestInteractor{
-		Repo:  mockRepo,
-		Genid: mockGenid,
-		UserRepo: mockUserRepo,
-	}
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "B"}
 
 	err := interactor.Execute(input)
 
-	if err == nil || err.Error() != "sender does not exist" {
-		t.Errorf("Expected 'sender does not exist' error, got %v", err)
+	if err == nil || !errors.Is(err, usecase.ErrSenderNotFound) {
+		t.Errorf("Expected '送信者が存在しません' error, got %v", err)
 	}
 }
 
@@ -121,7 +105,7 @@ func (m *MockUserPort) ExistsByID(userID string) (bool, error) {
 		return false, nil
 	}
 	return exists, nil
-}	
+}
 
 // createTestInteractor は、テストしたい状況を bool で指定して Interactor を生成する
 func createTestInteractor(isDuplicate bool, senderExists bool, targetExists bool) *usecase.SendFriendRequestInteractor {
@@ -149,6 +133,3 @@ func createTestInteractor(isDuplicate bool, senderExists bool, targetExists bool
 		UserRepo: mockUserRepo,
 	}
 }
-
-
-

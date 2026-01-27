@@ -8,7 +8,11 @@ import (
 )
 
 var (
-	ErrAlreadySent = errors.New("friend request already sent")
+	ErrAlreadySent = errors.New("既にフレンドリクエストが送信されています")
+	ErrSelfRequest = errors.New("自分自身に送信することはできません")
+	ErrSenderNotFound = errors.New("送信者が存在しません")
+	ErrTargetNotFound = errors.New("ターゲットが存在しません")
+
 )
 
 // SendFriendRequestInput はユースケースへの入力データ
@@ -28,7 +32,7 @@ type SendFriendRequestInteractor struct {
 func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) error {
 	// 送信者とターゲットが同一でないか確認
 	if input.SenderID == input.TargetID {
-		return errors.New("cannot send friend request to oneself")
+		return ErrSelfRequest
 	}
 
 	// 送信者とターゲットが存在するか確認
@@ -38,14 +42,14 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 		return err
 	}
 	if !senderExists {
-		return errors.New("sender does not exist")
+		return ErrSenderNotFound
 	}
 	targetExists, err := i.UserRepo.ExistsByID(input.TargetID)
 	if err != nil {
 		return err
 	}
 	if !targetExists {
-		return errors.New("target does not exist")
+		return ErrTargetNotFound
 	}
 
 	// 既にリクエスト済みか確認
