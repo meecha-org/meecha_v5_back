@@ -1,12 +1,10 @@
 package domain
 
 import (
-	"errors"
+	"app/messages"
 	"time"
 )
-var (
-	ErrSelfRequest = errors.New("自分自身に送信することはできません")
-)
+
 // FriendRequest はフレンドリクエストを表すドメインエンティティ
 type FriendRequest struct {
 	SenderID  string `gorm:"primaryKey"`
@@ -19,7 +17,7 @@ type FriendRequest struct {
 func SendFriendRequest(senderID, targetID, requestID string) (*FriendRequest, error) {
 	// 送信者とターゲットが同一でないか確認
 	if senderID == targetID {
-		return nil, ErrSelfRequest
+		return nil, messages.ErrSelfRequest
 	}
 	return &FriendRequest{
 		SenderID:  senderID,

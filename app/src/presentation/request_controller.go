@@ -2,7 +2,7 @@ package presentation
 
 import (
 	"app/application/usecase"
-	"errors"
+	"app/messages"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -29,7 +29,7 @@ func (h *FriendHandler) HandleSendRequest(c echo.Context) error {
 	if err := c.Bind(&input); err != nil {
 		// バインドエラーは通常 400 Bad Request
         // c.Logger.Error(err) 
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request format"})
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": messages.ErrInvalidFormat.Error()})
 	}
 
     // 2. ユースケースの実行 (内側の層への呼び出し)
@@ -37,17 +37,12 @@ func (h *FriendHandler) HandleSendRequest(c echo.Context) error {
 
 	// 3. 結果の判定とレスポンスの返却
 	if err != nil {
-		if errors.Is(err, usecase.ErrAlreadySent) {
-			// ビジネスロジックによる重複エラーの場合
-			return c.JSON(http.StatusConflict, map[string]string{"error": err.Error()}) // 409 Conflict
-		}
-        
         // その他のエラーはサーバーエラーとして処理
         // c.Logger.Error(err) 
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal Server Error"}) // 500 Internal Server Error
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error":err.Error()}) // 500 Internal Server Error
 	}
 
     // 4. 成功レスポンス
     // 成功したリソース作成は 201 Created で返す
-	return c.JSON(http.StatusCreated, map[string]string{"message": "Friend request sent successfully"}) 
+	return c.JSON(http.StatusCreated, map[string]string{"message": messages.SuccessRequestSent}) 
 }

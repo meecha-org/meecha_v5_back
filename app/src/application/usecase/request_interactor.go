@@ -3,16 +3,8 @@ package usecase
 import (
 	"app/application/port"
 	"app/domain"
-	"errors"
+	"app/messages"
 	"log"
-)
-
-var (
-	ErrAlreadySent = errors.New("既にフレンドリクエストが送信されています")
-	ErrSelfRequest = errors.New("自分自身に送信することはできません")
-	ErrSenderNotFound = errors.New("送信者が存在しません")
-	ErrTargetNotFound = errors.New("ターゲットが存在しません")
-
 )
 
 // SendFriendRequestInput はユースケースへの入力データ
@@ -32,7 +24,7 @@ type SendFriendRequestInteractor struct {
 func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) error {
 	// 送信者とターゲットが同一でないか確認
 	if input.SenderID == input.TargetID {
-		return ErrSelfRequest
+		return messages.ErrSelfRequest
 	}
 
 	// 送信者とターゲットが存在するか確認
@@ -42,14 +34,14 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 		return err
 	}
 	if !senderExists {
-		return ErrSenderNotFound
+		return messages.ErrSenderNotFound
 	}
 	targetExists, err := i.UserRepo.ExistsByID(input.TargetID)
 	if err != nil {
 		return err
 	}
 	if !targetExists {
-		return ErrTargetNotFound
+		return messages.ErrTargetNotFound
 	}
 
 	// 既にリクエスト済みか確認
@@ -58,7 +50,7 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 		return err
 	}
 	if exists {
-		return ErrAlreadySent
+		return messages.ErrAlreadySent
 	}
 
 	// uuidを生成

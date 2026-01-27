@@ -6,6 +6,7 @@ import (
 
 	"app/application/usecase"
 	"app/domain"
+	"app/messages"
 )
 
 // MockFriendRequestPort はリポジトリPortのモック
@@ -59,7 +60,7 @@ func TestExecute_AlreadySent(t *testing.T) {
 
 	err := interactor.Execute(input)
 
-	if !errors.Is(err, usecase.ErrAlreadySent) {
+	if !errors.Is(err, messages.ErrAlreadySent) {
 		t.Errorf("Expected ErrAlreadySent, got %v", err)
 	}
 }
@@ -73,7 +74,7 @@ func TestExecute_SelfRequest(t *testing.T) {
 
 	err := interactor.Execute(input)
 
-	if err == nil || !errors.Is(err, usecase.ErrSelfRequest) {
+	if err == nil || !errors.Is(err, messages.ErrSelfRequest) {
 		t.Errorf("Expected 'cannot send...' error, got %v", err)
 	}
 }
@@ -86,7 +87,7 @@ func TestExecute_NonExistentUser(t *testing.T) {
 
 	err := interactor.Execute(input)
 
-	if err == nil || !errors.Is(err, usecase.ErrSenderNotFound) {
+	if err == nil || !errors.Is(err, messages.ErrSenderNotFound) {
 		t.Errorf("Expected '送信者が存在しません' error, got %v", err)
 	}
 }
