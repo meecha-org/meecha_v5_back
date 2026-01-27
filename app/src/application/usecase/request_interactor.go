@@ -64,7 +64,10 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	}
 
 	// ドメインエンティティの作成
-	req := domain.SendFriendRequest(input.SenderID, input.TargetID, uid)
+	req, err := domain.SendFriendRequest(input.SenderID, input.TargetID, uid)
+	if err != nil {
+		return err
+	}
 
 	// 永続化
 	return i.Repo.Create(req)
