@@ -3,7 +3,7 @@ package domain_test
 import (
 	"testing"
 	"time"
-    
+
 	"app/domain"
 )
 
@@ -16,7 +16,10 @@ func TestSendFriendRequest_Creation(t *testing.T) {
 	// 実行前の現在時刻を取得（Createdフィールドのテスト用）
 	startTime := time.Now().Unix()
 
-	req := domain.SendFriendRequest(senderID, targetID, requestID)
+	req, err := domain.SendFriendRequest(senderID, targetID, requestID)
+	if err != nil {
+		t.Fatalf("Failed to create FriendRequest: %v", err)
+	}
 
 	// 1. 各フィールドが正しく設定されているか確認
 	if req.SenderID != senderID {
