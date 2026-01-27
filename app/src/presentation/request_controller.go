@@ -33,13 +33,13 @@ func (h *FriendHandler) HandleSendRequest(c echo.Context) error {
 	}
 
     // 2. ユースケースの実行 (内側の層への呼び出し)
-	err := h.Interactor.Execute(input)
+	code, err := h.Interactor.Execute(input)
 
 	// 3. 結果の判定とレスポンスの返却
 	if err != nil {
         // その他のエラーはサーバーエラーとして処理
         // c.Logger.Error(err) 
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error":err.Error()}) // 500 Internal Server Error
+		return c.JSON(code, map[string]string{"error":err.Error()}) // 500 Internal Server Error
 	}
 
     // 4. 成功レスポンス

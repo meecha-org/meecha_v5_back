@@ -44,10 +44,12 @@ func TestExecute_Success(t *testing.T) {
 		TargetID: "B",
 	}
 
-	err := interactor.Execute(*input)
-
+	code,err := interactor.Execute(*input)
 	if err != nil {
 		t.Fatalf("Expected nil error, got %v", err)
+	}
+	if code != 201 {
+		t.Errorf("Expected status code 201, got %d", code)
 	}
 }
 
@@ -58,10 +60,12 @@ func TestExecute_AlreadySent(t *testing.T) {
 
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "B"}
 
-	err := interactor.Execute(input)
-
+	code,err := interactor.Execute(input)
 	if !errors.Is(err, messages.ErrAlreadySent) {
 		t.Errorf("Expected ErrAlreadySent, got %v", err)
+	}
+	if code != 409 {
+		t.Errorf("Expected status code 409, got %d", code)
 	}
 }
 
@@ -72,10 +76,13 @@ func TestExecute_SelfRequest(t *testing.T) {
 	// 送信者とターゲットが同一
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "A"}
 
-	err := interactor.Execute(input)
-
+	code,err := interactor.Execute(input)
 	if err == nil || !errors.Is(err, messages.ErrSelfRequest) {
 		t.Errorf("Expected 'cannot send...' error, got %v", err)
+	}
+
+	if code != 400 {
+		t.Errorf("Expected status code 400, got %d", code)
 	}
 }
 
@@ -85,10 +92,12 @@ func TestExecute_NonExistentUser(t *testing.T) {
 
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "B"}
 
-	err := interactor.Execute(input)
-
+	code,err := interactor.Execute(input)
 	if err == nil || !errors.Is(err, messages.ErrSenderNotFound) {
 		t.Errorf("Expected '送信者が存在しません' error, got %v", err)
+	}
+	if code != 404 {
+		t.Errorf("Expected status code 404, got %d", code)
 	}
 }
 
