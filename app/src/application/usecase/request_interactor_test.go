@@ -48,8 +48,6 @@ func TestExecute_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected nil error, got %v", err)
 	}
-
-	// モックが期待通りに動作したことを確認するアサーションを追加するのが理想的
 }
 
 // TestExecute_AlreadySent テスト: 既にリクエスト済みの場合にErrAlreadySentを返すか
