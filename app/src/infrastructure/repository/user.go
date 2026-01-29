@@ -14,7 +14,7 @@ type UserRepositoryImpl struct {
 func (r *UserRepositoryImpl) ExistsByID(userID string) (bool, error) {
 	var count int64
 	err := r.DB.Model(&domain.User{}).
-		Where("user_id = ?", userID).
+		Where(&domain.User{UserID: userID}).
 		Count(&count).Error
 	if err != nil {
 		return false, err
