@@ -15,10 +15,12 @@ var (
 
 func Init() *gorm.DB {
 	// MySQL接続
+	log.Println("database ", os.Getenv("DATABASE_URL"))
 	dbconn, err := gorm.Open(mysql.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
 	if err != nil {
 		log.Println("failed to connect database", err)
 	}
+
 
 	// グローバル変数に格納
 	db = dbconn
