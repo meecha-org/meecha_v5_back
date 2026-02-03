@@ -12,6 +12,6 @@ var (
 )
 
 //成功
-var (
+const (
 	SuccessRequestSent = "フレンドリクエストが送信されました"
 )	
