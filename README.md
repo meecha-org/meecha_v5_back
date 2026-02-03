@@ -40,3 +40,9 @@ https://localhost:8633/ui/
 
 - バックエンド
 https://localhost:8633/app/
+
+- データベース
+    - テスト用　psql -U meecha -d meecha_test
+    - 本番用　 psql -U meecha -d meecha
+
+
