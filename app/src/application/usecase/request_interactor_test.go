@@ -6,7 +6,7 @@ import (
 
 	"app/application/usecase"
 	"app/domain"
-	"app/messages"
+	"app/domain/commons/messages"
 )
 
 // MockFriendRequestPort はリポジトリPortのモック

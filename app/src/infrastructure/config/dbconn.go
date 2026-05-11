@@ -1,7 +1,7 @@
 package config
 
 import (
-	"app/domain"
+	"app/infrastructure/models"
 	"log"
 	"os"
 	"testing"
@@ -24,10 +24,10 @@ func Init() *gorm.DB {
 	db = dbconn
 
 	//マイグレーション
-	db.AutoMigrate(&domain.FriendRequest{})
-	db.AutoMigrate(&domain.User{})
-	db.AutoMigrate(&domain.Session{})
-	db.AutoMigrate(&domain.Label{})
+	db.AutoMigrate(&models.FriendRequest{})
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Session{})
+	db.AutoMigrate(&models.Label{})
 
 	return db
 }
@@ -42,15 +42,15 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 
 	// 2. テーブルをマイグレーション
 
-	db.Migrator().DropTable(&domain.FriendRequest{})
-	db.Migrator().DropTable(&domain.User{})
-	db.Migrator().DropTable(&domain.Session{})
-	db.Migrator().DropTable(&domain.Label{})
+	db.Migrator().DropTable(&models.FriendRequest{})
+	db.Migrator().DropTable(&models.User{})
+	db.Migrator().DropTable(&models.Session{})
+	db.Migrator().DropTable(&models.Label{})
 
-	db.AutoMigrate(&domain.FriendRequest{})
-	db.AutoMigrate(&domain.User{})
-	db.AutoMigrate(&domain.Session{})
-	db.AutoMigrate(&domain.Label{})
+	db.AutoMigrate(&models.FriendRequest{})
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Session{})
+	db.AutoMigrate(&models.Label{})
 
 	return db
 }

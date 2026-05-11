@@ -3,7 +3,7 @@ package main
 import (
 	"app/infrastructure/config"
 	"app/route"
-
+	
 	"github.com/labstack/echo/v4/middleware"
 )
 
@@ -25,5 +25,5 @@ func main() {
 	server.Use(middleware.Recover())
 
 	// サーバー起動 (EchoのListen)
-	server.Logger.Fatal(server.Start(":8080")) // 💡 Echoの起動メソッドを使用
+	server.Logger.Fatal(server.Start(":9090")) // 💡 Echoの起動メソッドを使用
 }

@@ -3,7 +3,7 @@ package usecase
 import (
 	"app/application/port"
 	"app/domain"
-	"app/messages"
+	"app/domain/commons/messages"
 	"log"
 	"net/http"
 )
