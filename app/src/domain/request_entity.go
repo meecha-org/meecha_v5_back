@@ -7,10 +7,10 @@ import (
 
 // FriendRequest はフレンドリクエストを表すドメインエンティティ
 type FriendRequest struct {
-	SenderID  string `gorm:"primaryKey"`
-	TargetID  string `gorm:"primaryKey"`
-	RequestID string `gorm:"size:36;uniqueIndex"` // UUIDなどを格納
-	Created   int64  `gorm:"autoCreateTime"`      // 作成時間 (UNIX秒)
+	RequestID string // リクエストの一意なID (UUIDなど)
+	SenderID  string // 送信者のユーザーID
+	TargetID  string // ターゲットのユーザーID
+	Created   int64  // 作成時間 (UNIX秒)
 }
 
 // NewFriendRequest は新しいフレンドリクエストを作成します。
@@ -20,9 +20,9 @@ func SendFriendRequest(senderID, targetID, requestID string) (*FriendRequest, er
 		return nil, messages.ErrSelfRequest
 	}
 	return &FriendRequest{
+		RequestID: requestID, // ID生成はユースケース層で行う
 		SenderID:  senderID,
 		TargetID:  targetID,
-		RequestID: requestID, // ID生成はユースケース層で行う
 		Created:   time.Now().Unix(),
 	}, nil
 }
