@@ -14,16 +14,16 @@ const (
 type ProviderCode string
 
 type User struct {
-	UserID       string       // ユーザーID
-	Name         string       // ユーザー名
-	Email        string       // メールアドレス
-	ProvCode     ProviderCode // 認証プロバイダコード
-	ProvUID      string       // 認証プロバイダUID
-	PasswordHash string       // ハッシュ化されたパスワード
-	CreatedAt    int64        // ユーザー作成日 (UNIX秒)
-	IsBanned     int          // 0: 通常, 1: バン
-	IsSystem     int          // 0: 通常, 1: システムユーザー
-	UpdatedAt    int64        // 最終更新日 (UNIX秒)
+	UserID       string      
+	Name         string       
+	Email        string       
+	ProvCode     ProviderCode
+	ProvUID      string     
+	PasswordHash string     
+	CreatedAt    int64      
+	IsBanned     int        
+	IsSystem     int          
+	UpdatedAt    int64
 }
 
 // NewUser は新しいユーザーエンティティを作成します。

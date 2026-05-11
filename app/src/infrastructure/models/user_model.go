@@ -1,5 +1,9 @@
 package models
 
+import (
+	"app/domain"
+)
+
 type User struct {
 	UserID       string       `gorm:"type:varchar(255);primaryKey"`                             // ユーザーID
 	Name         string       `gorm:"type:varchar(255)"`                                        // ユーザー名
@@ -32,4 +36,17 @@ type Label struct {
 	Users []*User `gorm:"many2many:user_labels;constraint:OnDelete:CASCADE"`
 }
 
-
+func (u *User) ToDomain() *domain.User {
+	return &domain.User{
+		UserID:       u.UserID,	
+		Name:         u.Name,
+		Email:        u.Email,
+		ProvCode:     domain.ProviderCode(u.ProvCode),
+		ProvUID:      u.ProvUID,
+		PasswordHash: u.PasswordHash,
+		CreatedAt:    u.CreatedAt,
+		IsBanned:     u.IsBanned,
+		IsSystem:     u.IsSystem,
+		UpdatedAt:    u.UpdatedAt,
+	}
+}
