@@ -2,7 +2,7 @@ package presentation
 
 import (
 	"app/application/usecase"
-	"app/messages"
+	"app/domain/commons/messages"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
