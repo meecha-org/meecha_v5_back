@@ -17,7 +17,7 @@ type FriendRequest struct {
 func SendFriendRequest(senderID, targetID, requestID string) (*FriendRequest, error) {
 	// 送信者とターゲットが同一でないか確認
 	if senderID == targetID {
-		return nil, messages.ErrSelfRequest
+		return nil, commons.ErrSelfRequest
 	}
 	return &FriendRequest{
 		RequestID: requestID, // ID生成はユースケース層で行う
