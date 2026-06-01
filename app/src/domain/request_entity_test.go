@@ -38,3 +38,15 @@ func TestSendFriendRequest_Creation(t *testing.T) {
 	}
 }
 
+// TestSendFriendRequest_SelfRequest テスト: 自分自身へのリクエスト時にエラーを返すか
+func TestSendFriendRequest_SelfRequest(t *testing.T) {
+	senderID := "user123"
+	targetID := "user123"
+	requestID := "uuid-test-123"
+
+	_, err := domain.SendFriendRequest(senderID, targetID, requestID)
+	if err == nil {
+		t.Fatal("Expected error for self-request, got nil")
+	}
+}
+
