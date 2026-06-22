@@ -19,7 +19,7 @@ func TestCreateAndExists(t *testing.T) {
 	requestID := "uuid-001"
     
 	// 1. 作成
-	req, err := domain.SendFriendRequest(senderID, targetID, requestID)
+	req, err := domain.NewFriendRequest(requestID, senderID, targetID)
 	if err != nil {
 		t.Fatalf("Failed to create FriendRequest: %v", err)
 	}

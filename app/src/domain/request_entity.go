@@ -5,24 +5,44 @@ import (
 	"time"
 )
 
-// FriendRequest はフレンドリクエストを表すドメインエンティティ
 type FriendRequest struct {
-	RequestID string // リクエストの一意なID (UUIDなど)
-	SenderID  string // 送信者のユーザーID
-	TargetID  string // ターゲットのユーザーID
-	Created   int64  // 作成時間 (UNIX秒)
+	requestID string
+	senderID  string
+	targetID  string
+	created   int64
 }
 
-// NewFriendRequest は新しいフレンドリクエストを作成します。
-func SendFriendRequest(senderID, targetID, requestID string) (*FriendRequest, error) {
-	// 送信者とターゲットが同一でないか確認
+// Getters
+func (f *FriendRequest) RequestID() string { return f.requestID }
+func (f *FriendRequest) SenderID() string  { return f.senderID }
+func (f *FriendRequest) TargetID() string  { return f.targetID }
+func (f *FriendRequest) Created() int64    { return f.created }
+
+// 新規作成時：ビジネスルールを強制するコンストラクタ
+func NewFriendRequest(requestID, senderID, targetID string) (*FriendRequest, error) {
 	if senderID == targetID {
-		return nil,commons.NewBadRequestError("ErrSelfRequest") // 400 Bad Request
+		return nil, commons.NewBadRequestError("ErrSelfRequest")
 	}
+	// IDの形式チェックなどもここに書く
 	return &FriendRequest{
-		RequestID: requestID, // ID生成はユースケース層で行う
-		SenderID:  senderID,
-		TargetID:  targetID,
-		Created:   time.Now().Unix(),
+		requestID: requestID,
+		senderID:  senderID,
+		targetID:  targetID,
+		created:   time.Now().Unix(),
 	}, nil
+}
+
+// 再構築時：DBからの復元用（検証不要な場合）
+func ReconstructFriendRequest(requestID, senderID, targetID string, created int64) *FriendRequest {
+	return &FriendRequest{
+		requestID: requestID,
+		senderID:  senderID,
+		targetID:  targetID,
+		created:   created,
+	}
+}
+
+// ドメインロジック：リクエストの有効期限を判定する例
+func (f *FriendRequest) IsExpired(duration time.Duration) bool {
+	return time.Now().Unix()-f.created > int64(duration.Seconds())
 }
