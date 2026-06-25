@@ -2,7 +2,7 @@ package presentation
 
 import (
 	"app/application/usecase"
-	"app/domain/commons/messages"
+	commons "app/domain/commons/messages"
 	"app/presentation/utlis"
 	"net/http"
 
@@ -15,28 +15,27 @@ type FriendHandler struct {
 }
 
 // NewFriendHandler FriendHandlerのコンストラクタ
-func NewFriendHandler(interactor *usecase.SendFriendRequestInteractor) *FriendHandler{
+func NewFriendHandler(interactor *usecase.SendFriendRequestInteractor) *FriendHandler {
 	return &FriendHandler{
-        Interactor: interactor,
-    }
+		Interactor: interactor,
+	}
 }
 
-// HandleSendRequest 
+// HandleSendRequest
 func (h *FriendHandler) HandleSendRequest(c echo.Context) error {
 	var input usecase.SendFriendRequestInput
 
-    // JSONリクエストボディを直接 input 構造体にバインド
+	// JSONリクエストボディを直接 input 構造体にバインド
 	if err := c.Bind(&input); err != nil {
-        // c.Logger.Error(err) 
+		// c.Logger.Error(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": commons.NewBadRequestError("Invalid request").Error()}) // 400 Bad Request
 	}
 
-    //　ユースケースの実行 (内側の層への呼び出し)
+	//　ユースケースの実行 (内側の層への呼び出し)
 	err := h.Interactor.Execute(input)
 
 	utils.HandleError(c, err)
 
 	// 成功したリソース作成は 201 Created で返す
-	return c.JSON(http.StatusCreated,nil) // 201 Created
+	return c.JSON(http.StatusCreated, nil) // 201 Created
 }
-

@@ -3,9 +3,8 @@ package usecase
 import (
 	"app/application/port"
 	"app/domain"
-	"app/domain/commons/messages"
+	commons "app/domain/commons/messages"
 	"log"
-	
 )
 
 // SendFriendRequestInput はユースケースへの入力データ
@@ -22,8 +21,8 @@ type SendFriendRequestInteractor struct {
 }
 
 // Execute はユースケースを実行します
-func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) (error) {
-	// 送信者とターゲットが同一でないか確認
+func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) error {
+	// 送信者とターゲットが同一でないか確認(早期リターンでDB操作を減らす)
 	if input.SenderID == input.TargetID {
 		return commons.NewBadRequestError("ErrSelfRequest") // 400 Bad Request
 	}
@@ -36,7 +35,7 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) (err
 	}
 	if !senderExists {
 		return commons.NewBadRequestError("ErrSenderNotFound") // 400 Bad Request
-	} 
+	}
 	targetExists, err := i.UserRepo.ExistsByID(input.TargetID)
 	if err != nil {
 		return err
@@ -48,8 +47,8 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) (err
 	// 既にリクエスト済みか確認
 	exists, err := i.Repo.Exists(input.SenderID, input.TargetID)
 	if err != nil {
-		return	err
-	}	
+		return err
+	}
 	if exists {
 		return commons.NewConflictError("ErrAlreadySent") // 409 Conflict
 	}

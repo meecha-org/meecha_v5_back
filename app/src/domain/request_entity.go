@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"app/domain/commons/messages"
+	commons "app/domain/commons/messages"
 	"time"
 )
 

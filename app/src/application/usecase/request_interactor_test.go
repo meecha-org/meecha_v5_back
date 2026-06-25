@@ -1,11 +1,11 @@
 package usecase_test
 
 import (
-	"testing"
-	e "errors"
 	"app/application/usecase"
 	"app/domain"
-	"app/domain/commons/messages"
+	commons "app/domain/commons/messages"
+	e "errors"
+	"testing"
 )
 
 // MockFriendRequestPort はリポジトリPortのモック
@@ -25,7 +25,7 @@ func (m *MockFriendRequestPort) Exists(senderID, targetID string) (bool, error) 
 
 // MockUUIDGeneratorPort はID生成Portのモック
 type MockUUIDGeneratorPort struct {
-	GeneratedID string
+	GeneratedID   string
 	GenerateError error
 }
 
