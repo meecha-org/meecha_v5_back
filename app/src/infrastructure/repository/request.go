@@ -2,21 +2,11 @@ package repository
 
 import (
 	"app/domain"
+	"app/infrastructure/models"
+
 	"gorm.io/gorm"
 )
 
-// DB専用の永続化モデル（インフラ層の都合）
-type friendRequestModel struct {
-	RequestID string `gorm:"primaryKey"`
-	SenderID  string `gorm:"index"`
-	TargetID  string `gorm:"index"`
-	Created   int64
-}
-
-// GORMにテーブル名を指定
-func (friendRequestModel) TableName() string {
-	return "friend_requests"
-}
 
 type FriendRequestRepositoryImpl struct {
 	DB *gorm.DB
@@ -24,7 +14,7 @@ type FriendRequestRepositoryImpl struct {
 
 // Create はドメインモデルを変換して保存
 func (r *FriendRequestRepositoryImpl) Create(req *domain.FriendRequest) error {
-	model := friendRequestModel{
+	model := models.FriendRequest{
 		RequestID: req.RequestID(),
 		SenderID:  req.SenderID(),
 		TargetID:  req.TargetID(),
@@ -37,7 +27,7 @@ func (r *FriendRequestRepositoryImpl) Create(req *domain.FriendRequest) error {
 func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, error) {
 	var count int64
 	// 検索時は構造体ではなく条件式を使うのがGoのORMにおける安全なプラクティスです
-	err := r.DB.Model(&friendRequestModel{}).
+	err := r.DB.Model(&models.FriendRequest{}).
 		Where("sender_id = ? AND target_id = ?", senderID, targetID).
 		Count(&count).Error
 
