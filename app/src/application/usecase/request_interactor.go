@@ -3,7 +3,7 @@ package usecase
 import (
 	"app/application/port"
 	"app/domain"
-	commons "app/domain/commons/messages"j
+	commons "app/domain/commons/messages"
 )
 
 // SendFriendRequestInput はユースケースへの入力データ
