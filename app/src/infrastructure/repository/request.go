@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type FriendRequestRepositoryImpl struct {
 	DB *gorm.DB
 }
@@ -28,8 +27,8 @@ func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, e
 	var count int64
 	// 検索時は構造体ではなく条件式を使うのがGoのORMにおける安全なプラクティスです
 	err := r.DB.Model(&models.FriendRequest{}).
-		Where("sender_id = ? AND target_id = ?", senderID, targetID).
-		Count(&count).Error
+		Where("(sender_id = ? AND target_id = ?) OR (sender_id = ? AND target_id = ?)",
+			senderID, targetID, targetID, senderID).Count(&count).Error
 
 	if err != nil {
 		return false, err
