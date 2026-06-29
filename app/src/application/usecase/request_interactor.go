@@ -3,8 +3,7 @@ package usecase
 import (
 	"app/application/port"
 	"app/domain"
-	commons "app/domain/commons/messages"
-	"log"
+	commons "app/domain/commons/messages"j
 )
 
 // SendFriendRequestInput はユースケースへの入力データ
@@ -30,7 +29,6 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	// 送信者とターゲットが存在するか確認
 	senderExists, err := i.UserRepo.ExistsByID(input.SenderID)
 	if err != nil {
-		log.Println("Error checking sender existence:", err)
 		return err
 	}
 	if !senderExists {
