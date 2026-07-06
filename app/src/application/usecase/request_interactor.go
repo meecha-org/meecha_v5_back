@@ -43,9 +43,9 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	}
 
 	// 既にリクエスト済みか確認
-	exists, err := i.Repo.Exists(input.SenderID, input.TargetID)
-	if err != nil {
-		return err
+	exists, serr := i.Repo.Exists(input.SenderID, input.TargetID)
+	if serr != "" {
+		return commons.InternalError //500 Internal Server Error
 	}
 	if exists {
 		return commons.NewConflictError("ErrAlreadySent") // 409 Conflict

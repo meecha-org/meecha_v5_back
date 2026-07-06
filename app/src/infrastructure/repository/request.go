@@ -2,9 +2,11 @@ package repository
 
 import (
 	"app/domain"
+	commons "app/domain/commons/messages"
 	"app/infrastructure/models"
 
 	"gorm.io/gorm"
+	"app/domain/logger"
 )
 
 type FriendRequestRepositoryImpl struct {
@@ -23,15 +25,20 @@ func (r *FriendRequestRepositoryImpl) Create(req *domain.FriendRequest) error {
 }
 
 // Exists はDBモデルを使用して存在確認
-func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, error) {
+func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, string) {
 	var count int64
 	// 検索時は構造体ではなく条件式を使うのがGoのORMにおける安全なプラクティスです
 	err := r.DB.Model(&models.FriendRequest{}).
 		Where("(sender_id = ? AND target_id = ?) OR (sender_id = ? AND target_id = ?)",
 			senderID, targetID, targetID, senderID).Count(&count).Error
 
-	if err != nil {
-		return false, err
+	if err == gorm.ErrRecordNotFound {
+		return false, commons.NotFoundError.Error()
 	}
-	return count > 0, nil
+	if err != nil {
+		logger.Println(err)
+		return false, commons.InternalError.Error()
+	}
+
+	return count > 0, ""
 }

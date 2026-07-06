@@ -19,8 +19,8 @@ func (m *MockFriendRequestPort) Create(req *domain.FriendRequest) error {
 	return m.CreateError
 }
 
-func (m *MockFriendRequestPort) Exists(senderID, targetID string) (bool, error) {
-	return m.ExistsResult, m.ExistsError
+func (m *MockFriendRequestPort) Exists(senderID, targetID string) (bool, string) {
+	return m.ExistsResult, m.ExistsError.Error()
 }
 
 // MockUUIDGeneratorPort はID生成Portのモック

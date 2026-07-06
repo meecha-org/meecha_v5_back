@@ -27,14 +27,16 @@ func (h *FriendHandler) HandleSendRequest(c echo.Context) error {
 
 	// JSONリクエストボディを直接 input 構造体にバインド
 	if err := c.Bind(&input); err != nil {
-		// c.Logger.Error(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": commons.NewBadRequestError("Invalid request").Error()}) // 400 Bad Request
 	}
 
 	//　ユースケースの実行 (内側の層への呼び出し)
 	err := h.Interactor.Execute(input)
 
-	utils.HandleError(c, err)
+	if err != nil {
+		utils.HandleError(c, err)
+		return nil 
+	}
 
 	// 成功したリソース作成は 201 Created で返す
 	return c.JSON(http.StatusCreated, nil) // 201 Created
