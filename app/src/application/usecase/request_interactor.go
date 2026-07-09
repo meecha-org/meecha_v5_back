@@ -29,14 +29,14 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	// 送信者とターゲットが存在するか確認
 	senderExists, err := i.UserRepo.ExistsByID(input.SenderID)
 	if err != nil {
-		return err
+		return commons.NewInternalError(err.Error())
 	}
 	if !senderExists {
 		return commons.NewBadRequestError("ErrSenderNotFound") // 400 Bad Request
 	}
 	targetExists, err := i.UserRepo.ExistsByID(input.TargetID)
 	if err != nil {
-		return err
+		return commons.NewInternalError(err.Error())
 	}
 	if !targetExists {
 		return commons.NewBadRequestError("ErrTargetNotFound") // 400 Bad Request
@@ -45,7 +45,7 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	// 既にリクエスト済みか確認
 	exists, serr := i.Repo.Exists(input.SenderID, input.TargetID)
 	if serr != "" {
-		return commons.InternalError //500 Internal Server Error
+		return commons.NewInternalError(serr) //500 Internal Server Error
 	}
 	if exists {
 		return commons.NewConflictError("ErrAlreadySent") // 409 Conflict
@@ -54,13 +54,13 @@ func (i *SendFriendRequestInteractor) Execute(input SendFriendRequestInput) erro
 	// uuidを生成
 	uid, err := i.Genid.Genid()
 	if err != nil {
-		return err
+		return commons.NewInternalError(err.Error())
 	}
 
 	// ドメインエンティティの作成
 	req, err := domain.NewFriendRequest(uid, input.SenderID, input.TargetID)
 	if err != nil {
-		return err
+		return commons.NewBadRequestError(err.Error()) // 400 Bad Request
 	}
 
 	// 永続化
