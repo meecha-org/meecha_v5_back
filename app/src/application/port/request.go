@@ -9,5 +9,5 @@ type FriendRequestPort interface {
 	// リクエストを作成
 	Create(req *domain.FriendRequest) error 
 	// 既にリクエストが存在するか確認
-	Exists(senderID, targetID string) (bool, error)
+	Exists(senderID, targetID string) (bool, string)
 }

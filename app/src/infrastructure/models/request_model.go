@@ -11,10 +11,11 @@ type FriendRequest struct {
 }
 
 func (fre *FriendRequest) ToDomain() *domain.FriendRequest {
-	return &domain.FriendRequest{
-		RequestID: fre.RequestID,
-		SenderID:  fre.SenderID,
-		TargetID:  fre.TargetID,
-		Created:   fre.Created,
-	}
+	// ドメイン層の再構築関数を経由させる
+	return domain.ReconstructFriendRequest(
+		fre.RequestID,
+		fre.SenderID,
+		fre.TargetID,
+		fre.Created,
+	)
 }

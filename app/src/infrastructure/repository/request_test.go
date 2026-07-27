@@ -19,7 +19,7 @@ func TestCreateAndExists(t *testing.T) {
 	requestID := "uuid-001"
     
 	// 1. 作成
-	req, err := domain.SendFriendRequest(senderID, targetID, requestID)
+	req, err := domain.NewFriendRequest(requestID, senderID, targetID)
 	if err != nil {
 		t.Fatalf("Failed to create FriendRequest: %v", err)
 	}
@@ -29,9 +29,9 @@ func TestCreateAndExists(t *testing.T) {
 	}
 
 	// 2. 存在確認
-	exists, err := repo.Exists(senderID, targetID)
-	if err != nil {
-		t.Fatalf("Exists failed: %v", err)
+	exists, serr := repo.Exists(senderID, targetID)
+	if serr != "" {
+		t.Fatalf("Exists failed: %v", serr)
 	}
 	if !exists {
 		t.Errorf("Expected Exists to be true, got false")

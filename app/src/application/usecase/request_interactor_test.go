@@ -1,12 +1,11 @@
 package usecase_test
 
 import (
-	"errors"
-	"testing"
-
 	"app/application/usecase"
 	"app/domain"
-	"app/domain/commons/messages"
+	commons "app/domain/commons/messages"
+	e "errors"
+	"testing"
 )
 
 // MockFriendRequestPort はリポジトリPortのモック
@@ -20,13 +19,13 @@ func (m *MockFriendRequestPort) Create(req *domain.FriendRequest) error {
 	return m.CreateError
 }
 
-func (m *MockFriendRequestPort) Exists(senderID, targetID string) (bool, error) {
-	return m.ExistsResult, m.ExistsError
+func (m *MockFriendRequestPort) Exists(senderID, targetID string) (bool, string) {
+	return m.ExistsResult, m.ExistsError.Error()
 }
 
 // MockUUIDGeneratorPort はID生成Portのモック
 type MockUUIDGeneratorPort struct {
-	GeneratedID string
+	GeneratedID   string
 	GenerateError error
 }
 
@@ -44,12 +43,9 @@ func TestExecute_Success(t *testing.T) {
 		TargetID: "B",
 	}
 
-	code,err := interactor.Execute(*input)
+	err := interactor.Execute(*input)
 	if err != nil {
 		t.Fatalf("Expected nil error, got %v", err)
-	}
-	if code != 201 {
-		t.Errorf("Expected status code 201, got %d", code)
 	}
 }
 
@@ -60,12 +56,10 @@ func TestExecute_AlreadySent(t *testing.T) {
 
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "B"}
 
-	code,err := interactor.Execute(input)
-	if !errors.Is(err, messages.ErrAlreadySent) {
-		t.Errorf("Expected ErrAlreadySent, got %v", err)
-	}
-	if code != 409 {
-		t.Errorf("Expected status code 409, got %d", code)
+	err := interactor.Execute(input)
+	var customErr *commons.CustomError
+	if !e.As(err, &customErr) || customErr.Type != commons.TypeConflict {
+		t.Errorf("Expected TypeConflict, got %v", err)
 	}
 }
 
@@ -76,13 +70,10 @@ func TestExecute_SelfRequest(t *testing.T) {
 	// 送信者とターゲットが同一
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "A"}
 
-	code,err := interactor.Execute(input)
-	if err == nil || !errors.Is(err, messages.ErrSelfRequest) {
-		t.Errorf("Expected 'cannot send...' error, got %v", err)
-	}
-
-	if code != 400 {
-		t.Errorf("Expected status code 400, got %d", code)
+	err := interactor.Execute(input)
+	var customErr *commons.CustomError
+	if !e.As(err, &customErr) || customErr.Type != commons.TypeBadRequest {
+		t.Errorf("Expected TypeBadRequest, got %v", err)
 	}
 }
 
@@ -92,12 +83,10 @@ func TestExecute_NonExistentUser(t *testing.T) {
 
 	input := usecase.SendFriendRequestInput{SenderID: "A", TargetID: "B"}
 
-	code,err := interactor.Execute(input)
-	if err == nil || !errors.Is(err, messages.ErrSenderNotFound) {
-		t.Errorf("Expected '送信者が存在しません' error, got %v", err)
-	}
-	if code != 404 {
-		t.Errorf("Expected status code 404, got %d", code)
+	err := interactor.Execute(input)
+	var customErr *commons.CustomError
+	if !e.As(err, &customErr) || customErr.Type != commons.TypeBadRequest {
+		t.Errorf("Expected TypeBadRequest, got %v", err)
 	}
 }
 
