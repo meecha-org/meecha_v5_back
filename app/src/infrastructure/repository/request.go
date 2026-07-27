@@ -33,6 +33,7 @@ func (r *FriendRequestRepositoryImpl) Exists(senderID, targetID string) (bool, s
 			senderID, targetID, targetID, senderID).Count(&count).Error
 
 	if err == gorm.ErrRecordNotFound {
+		logger.Println(err)
 		return false, commons.NotFoundError.Error()
 	}
 	if err != nil {
